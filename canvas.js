@@ -49,8 +49,8 @@ class Sprite {
     this.height = height;
     this.canvasHeight = this.canvas.height;
     this.canvasWidth = this.canvas.width;
-    this.dx = 2;
-    this.dy = 2;
+    this.dx = 10;
+    this.dy = 10;
     this.x = 250;
     this.y = 375;
 
@@ -61,31 +61,55 @@ class Sprite {
   }
 
   Draw() {
+    //this.clearRect(0, 0, this.canvas.width, this.canvas.height);
     //draw iamge (srx, xAxix, yAxis, width,)
     this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
 
+  Clear() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
   CheckKeys() {
     //add event listener for keys wasd for movement and move them accordingly
     // I had bug where orginally my event Listener said function(event) instead of (event) =>. when i would use "this" it was not refering to the sprite class but instead it was refering to the event listener Resource "https://www.freecodecamp.org/news/the-difference-between-arrow-functions-and-normal-functions/"
     addEventListener("keydown", (event) => {
+      // Clears prev Sprite Image
+      this.Clear();
       if (event.key === "w") {
-        console.log("Pressed w");
-        this.y -= this.dy;
+        //console.log("Pressed w");
+        //console.log(this.y);
+        if (this.y > 0) {
+          this.y -= this.dy;
+        }
         this.Draw();
       } else if (event.key === "s") {
         console.log("Pressed s");
-        this.y += this.dy;
+        if (this.y + this.height < scene.canvas.height) {
+          //console.log(this.y + this.height + " canvas scene =");
+          //console.log(scene.canvas.height);
+          this.y += this.dy;
+        }
+
         this.Draw();
       }
       if (event.key === "a") {
-        console.log("Pressed a");
-        this.x -= this.dx;
+        //console.log("Pressed a");
+        if (this.x > 0) {
+          //console.log(this.x);
+          this.x -= this.dx;
+        }
         this.Draw();
       }
       if (event.key === "d") {
         console.log("Pressed s");
-        this.x += this.dx;
+        if (this.x + this.width < scene.canvas.width) {
+          /** 
+            console.log(
+            "Sprite X: " + this.x + " Canvas Width: " + scene.canvas.width
+          );
+          **/
+          this.x += this.dx;
+        }
         this.Draw();
       }
     });
