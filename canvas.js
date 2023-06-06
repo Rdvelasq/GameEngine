@@ -18,14 +18,37 @@ class Scene {
   Start() {
     // Create Sprite Image
     this.sprite = new Sprite(imgSrc, 40, 50);
+    this.sprite.CheckKeys();
     this.Animate();
   } // end Start method
 
+  DrawGoalPost(xAxis, yAxis) {
+    this.context.fillStyle = "black";
+    this.context.strokeRect(xAxis, yAxis, 150, 75);
+  }
   Animate() {
     if (this.animationIsRunning) {
-      this.sprite.CheckKeys();
+      this.Clear();
+      let RecXAxis = 100;
+      let RecYAxis = 100;
+      this.DrawGoalPost(RecXAxis, RecYAxis);
+      // Check X Axis Collison
+      if (
+        // Sprite right side greater than Goal left side collison
+        this.sprite.x + this.sprite.width > RecXAxis &&
+        // Sprite left side less than Goal Right side collison
+        this.sprite.x < RecXAxis + 150 &&
+        // Sprite top side less than Goal bottom side collison
+        this.sprite.y < RecYAxis + 75 &&
+        // Sprite bottom side greater than Goal top side Collison
+        this.sprite.y + this.sprite.height > RecYAxis
+      ) {
+        console.log("collison");
+      }
       this.sprite.Draw();
-      requestAnimationFrame(this.Animate);
+
+      //Aarow function in order to use "this" refrence to the Scene
+      requestAnimationFrame(() => this.Animate());
     }
   }
 
@@ -66,31 +89,24 @@ class Sprite {
     this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
 
-  Clear() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
   CheckKeys() {
     //add event listener for keys wasd for movement and move them accordingly
     // I had bug where orginally my event Listener said function(event) instead of (event) =>. when i would use "this" it was not refering to the sprite class but instead it was refering to the event listener Resource "https://www.freecodecamp.org/news/the-difference-between-arrow-functions-and-normal-functions/"
     addEventListener("keydown", (event) => {
       // Clears prev Sprite Image
-      this.Clear();
       if (event.key === "w") {
         //console.log("Pressed w");
         //console.log(this.y);
         if (this.y > 0) {
           this.y -= this.dy;
         }
-        this.Draw();
       } else if (event.key === "s") {
-        console.log("Pressed s");
+        //console.log("Pressed s");
         if (this.y + this.height < scene.canvas.height) {
           //console.log(this.y + this.height + " canvas scene =");
           //console.log(scene.canvas.height);
           this.y += this.dy;
         }
-
-        this.Draw();
       }
       if (event.key === "a") {
         //console.log("Pressed a");
@@ -98,19 +114,16 @@ class Sprite {
           //console.log(this.x);
           this.x -= this.dx;
         }
-        this.Draw();
       }
       if (event.key === "d") {
-        console.log("Pressed s");
+        //console.log("Pressed s");
         if (this.x + this.width < scene.canvas.width) {
-          /** 
-            console.log(
-            "Sprite X: " + this.x + " Canvas Width: " + scene.canvas.width
-          );
-          **/
+          // console.log(
+          //   "Sprite X: " + this.x + " Canvas Width: " + scene.canvas.width
+          // );
+
           this.x += this.dx;
         }
-        this.Draw();
       }
     });
   } // end InitKeys
