@@ -1,6 +1,16 @@
 let imgSrc =
   "https://img.freepik.com/free-vector/soccer-ball-realistic_78370-594.jpg?w=740&t=st=1686002711~exp=1686003311~hmac=a7a019dc26fa3704562b1271af39372339e942f42cab5efc08c83dd4350e6af4";
 
+let RecXAxis = 100;
+let RecYAxis = 100;
+let scoreEl = document.getElementById("score");
+let score = parseInt(scoreEl.innerHTML);
+let button = document.getElementById("button").addEventListener("click", () => {
+  alert(
+    "Command the soccer ball using the W, A, S, D keys on your keyboard. Every successful goal earns you a point"
+  );
+});
+
 class Scene {
   // Constructor - Initalizes Canvas upon make an instance of scene
   constructor() {
@@ -13,11 +23,13 @@ class Scene {
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     // Helps stop the animation if needed
     this.animationIsRunning = true;
+    this.hasScored = false;
   }
 
   Start() {
     // Create Sprite Image
     this.sprite = new Sprite(imgSrc, 40, 50);
+
     this.sprite.CheckKeys();
     this.Animate();
   } // end Start method
@@ -29,8 +41,11 @@ class Scene {
   Animate() {
     if (this.animationIsRunning) {
       this.Clear();
-      let RecXAxis = 100;
-      let RecYAxis = 100;
+      if (this.hasScored) {
+        RecXAxis = Math.random() * 350;
+        RecYAxis = Math.random() * 675;
+        this.hasScored = false;
+      }
       this.DrawGoalPost(RecXAxis, RecYAxis);
       // Check X Axis Collison
       if (
@@ -43,7 +58,10 @@ class Scene {
         // Sprite bottom side greater than Goal top side Collison
         this.sprite.y + this.sprite.height > RecYAxis
       ) {
-        console.log("collison");
+        this.hasScored = true;
+        score++;
+        //change score and update it on
+        scoreEl.innerHTML = score;
       }
       this.sprite.Draw();
 
@@ -87,7 +105,7 @@ class Sprite {
     //this.clearRect(0, 0, this.canvas.width, this.canvas.height);
     //draw iamge (srx, xAxix, yAxis, width,)
     this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
-  }
+  } // end Draw Method
 
   CheckKeys() {
     //add event listener for keys wasd for movement and move them accordingly
